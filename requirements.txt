@@ -173,10 +173,6 @@ pyOpenSSL==22.0.0
 pyparsing==3.0.9
 pyperclip==1.8.2
 pypickle==1.1.0
-PyQt5==5.12.3
-PyQt5_sip==4.19.18
-PyQtChart==5.12
-PyQtWebEngine==5.12.1
 pyreadline3==3.4.1
 pyrsistent==0.18.0
 PySocks==1.7.1
