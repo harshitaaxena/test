@@ -27,7 +27,6 @@ bnlearn==0.6.3
 Bottleneck==1.3.5
 brotlipy==0.7.0
 cachetools==5.3.0
-causalnex==0.11.0
 certifi==2022.12.7
 cffi==1.15.1
 cftime==1.6.1
@@ -57,7 +56,6 @@ entrypoints==0.4
 ephem==4.1.2
 et-xmlfile==1.1.0
 fastjsonschema==2.16.2
-fbprophet==0.7.1
 flake8==4.0.1
 Flask==2.2.2
 fonttools==4.37.1
@@ -102,9 +100,6 @@ kmodes==0.12.1
 kneed==0.8.1
 korean-lunar-calendar==0.2.1
 lazy-object-proxy==1.7.1
-lazypredict==0.2.12
-lightgbm==3.3.3
-lightning-utilities==0.6.0.post0
 llvmlite==0.39.0
 LunarCalendar==0.0.9
 Mako==1.2.4
@@ -169,7 +164,6 @@ pydeck==0.8.1b0
 pydocstyle==6.1.1
 pyflakes==2.4.0
 Pygments==2.15.1
-pygraphviz==1.5
 pylint==2.15.4
 pyls-spyder==0.4.0
 PyMeeus==0.5.10
@@ -253,8 +247,6 @@ toml==0.10.2
 tomli==2.0.1
 tomlkit==0.11.6
 toolz==0.12.0
-torch==1.13.0
-torchmetrics==0.11.1
 tornado==6.2
 tqdm==4.64.0
 traitlets==5.1.1
@@ -278,7 +270,6 @@ win-inet-pton==1.1.0
 wincertstore==0.2
 wrapt==1.12.1
 xarray==0.20.2
-xgboost==1.6.2
 yapf==0.32.0
 yarl==1.8.2
 zipp==3.8.1
