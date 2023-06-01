@@ -266,7 +266,7 @@ def format_excel(df):
 # In[9]:
 
 
-model_file = r"Meta_San_Simulator\LOD_prediction_training.pkl"
+model_file = r"LOD_prediction_training.pkl"
 with open(model_file, 'rb') as file:  
         parameters = pickle.load(file)
 coefficients = parameters['coeffecients']
@@ -277,7 +277,7 @@ ub_lb_df_ = pd.DataFrame({'Controllable_Parameter': ['Air Velocity','Steam Press
                          'upper':[32,3,2000,60,60,15,35,60,7,2]})
 
 
-data = pd.read_csv(r'Meta_San_Simulator\sample_data.csv')
+data = pd.read_csv(r'sample_data.csv')
 data= data[[ 'Air Velocity', 'Steam Inlet Temp', 'Steam Outlet Temp',
     'Steam Sep Line Temp', 'Transfer cool air temp', 'Steam Pressure',
     'Ambient Temp', 'Ambient Humidity', 'Feed_rate', 'LOD_raw', 'Swell_vol',
@@ -421,7 +421,7 @@ if nav_option == PAGE_1:
         # Create a Streamlit web app
         st.title("LOD Prediction")
         # Upload manufacturing image
-        image = Image.open(r"Meta_San_Simulator\manufacturing_img.jpeg")
+        image = Image.open(r"manufacturing_img.jpeg")
         st.image(image, use_column_width=True)
         st.subheader("Controllable Parameters")
         # User input for the controllable independent variables
