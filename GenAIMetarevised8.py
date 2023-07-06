@@ -38,7 +38,7 @@ from langchain.vectorstores import VectorStore
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.vectorstores.faiss import FAISS
 from pypdf import PdfReader
-
+from config import *
 
 # In[35]:
 
@@ -922,7 +922,7 @@ else:
                         label="Select Page", min_value=1, max_value=len(pages), step=1
                     )
                     pages[page_sel - 1]
-                api = "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"
+                api = api
                 if api:
                     # Test the embeddings and save the index in a vector database
                     index = test_embed()
