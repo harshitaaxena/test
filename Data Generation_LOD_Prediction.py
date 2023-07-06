@@ -197,7 +197,7 @@ import pickle
 model_dict = {'model': model,'coeffecients':coefficients,'intercept':intercept, 'ub_lb_df':ub_lb_df}#caler':scaler}
 model_dict
 
-model_file =r"C:\Users\Harshita.Saxena\Downloads\Meta_San_Simulator\LOD_prediction_training_f.pkl"
+model_file =r"LOD_prediction_training.pkl"
 with open(model_file, 'wb') as file:  
     pickle.dump(model_dict, file)
 
