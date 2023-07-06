@@ -38,7 +38,7 @@ from langchain.vectorstores import VectorStore
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.vectorstores.faiss import FAISS
 from pypdf import PdfReader
-from config import *
+from config_genai import *
 
 # In[35]:
 
