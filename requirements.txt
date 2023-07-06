@@ -30,3 +30,4 @@ streamlit==1.24.0
 streamlit-chat==0.1.1
 tenacity==8.2.2
 tiktoken==0.4.0
+pypdf==3.12.0
