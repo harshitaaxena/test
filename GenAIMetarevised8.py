@@ -38,7 +38,8 @@ from langchain.vectorstores import VectorStore
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.vectorstores.faiss import FAISS
 from pypdf import PdfReader
-from config_meta import *
+#from config_meta import *
+
 
 
 
@@ -924,6 +925,7 @@ else:
                         label="Select Page", min_value=1, max_value=len(pages), step=1
                     )
                     pages[page_sel - 1]
+                api= st.secrets['api']
                 api = api
                 if api:
                     # Test the embeddings and save the index in a vector database
