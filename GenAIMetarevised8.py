@@ -38,7 +38,9 @@ from langchain.vectorstores import VectorStore
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.vectorstores.faiss import FAISS
 from pypdf import PdfReader
-#from config_genai import *
+from config_meta import *
+
+
 
 # In[35]:
 
@@ -413,7 +415,7 @@ def sim(text,df):
 # In[40]:
 
 
-model_file = r"LOD_prediction_training.pkl" #read model parameters
+model_file = r"C:\Users\Harshita.Saxena\Downloads\png_test\test\LOD_prediction_training.pkl" #read model parameters
 with open(model_file, 'rb') as file:  
         parameters = pickle.load(file)
 coefficients = parameters['coeffecients']
@@ -423,7 +425,7 @@ ub_lb_df_ = pd.DataFrame({'Controllable_Parameter': ['Air Velocity','Steam Press
                           'lower':[29,1,1000,10,10,5,23,23,0,0 ],
                          'upper':[32,3,2000,60,60,15,35,60,7,2]})
 
-data = pd.read_csv(r'sample_data.csv') #read sample data
+data = pd.read_csv(r'C:\Users\Harshita.Saxena\Downloads\png_test\test\sample_data.csv') #read sample data
 data= data[['Air Velocity',
        'Steam Inlet Temp', 'Steam Outlet Temp', 'Steam Sep Line Temp',
        'Transfer cool air temp', 'Steam Pressure', 'Ambient Temp',
@@ -435,7 +437,7 @@ data= data[['Air Velocity',
 
 
 df=data.copy()
-f = pd.read_csv(r'plot_data.csv')
+f = pd.read_csv(r'C:\Users\Harshita.Saxena\Downloads\png_test\test\plot_data.csv')
 
 # In[44]:
 
@@ -751,7 +753,7 @@ elif nav_option == PAGE_3 :
             st.subheader("Predicted Output for New Line")
             
             # Upload manufacturing image
-            image = Image.open(r"manufacturing_img.jpeg") #read img
+            image = Image.open(r"C:\Users\Harshita.Saxena\Downloads\png_test\test\manufacturing_img.jpeg") #read img
             # Create a draw object
             draw = ImageDraw.Draw(image)
             font = ImageFont.truetype("arial.ttf",size= 12)
@@ -922,13 +924,7 @@ else:
                         label="Select Page", min_value=1, max_value=len(pages), step=1
                     )
                     pages[page_sel - 1]
-
-                api = st.text_input(
-                "**Enter OpenAI API Key**",
-                type="password",
-                placeholder="sk-",
-                help="https://platform.openai.com/account/api-keys",
-                
+                api = api
                 if api:
                     # Test the embeddings and save the index in a vector database
                     index = test_embed()

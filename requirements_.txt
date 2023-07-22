@@ -1,0 +1,5 @@
+pandas==2.0.3
+pip==23.1.2
+regex==2023.6.3
+streamlit==1.24.0
+streamlit-chat==0.1.1
