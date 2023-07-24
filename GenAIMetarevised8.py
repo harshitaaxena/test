@@ -757,7 +757,8 @@ elif nav_option == PAGE_3 :
             image = Image.open(r"manufacturing_img.jpeg") #read img
             # Create a draw object
             draw = ImageDraw.Draw(image)
-            font = ImageFont.truetype("arial.ttf",size= 12)
+            #ImageFont.load_default()
+            font = ImageFont.truetype(size= 12)
             # Specify the coordinates to place the number
 
             # Write the number on the image
@@ -784,7 +785,7 @@ elif nav_option == PAGE_3 :
             y = 5
             
             predicted_moisture_content = np.dot(input_data_, np.append(coefficients,[intercept]))
-            font = ImageFont.truetype("arial.ttf",size= 17)
+            font = ImageFont.truetype(size= 17)
             text = "Predicted LOD Content :" + str(round( predicted_moisture_content[0],2)) +"%"
             draw.text((x,y), text, fill="green",font=font)
             st.image(image, use_column_width=True)
