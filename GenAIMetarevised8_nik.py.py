@@ -1682,7 +1682,8 @@ else:
                         label="Select Page", min_value=1, max_value=len(pages), step=1
                     )
                     pages[page_sel - 1]
-                api = api
+                
+                api = st.secrets['api']
                 if api:
                     # Test the embeddings and save the index in a vector database
                     index = test_embed()
