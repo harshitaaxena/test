@@ -1192,7 +1192,7 @@ nav_option = st.sidebar.radio("Operator Training Application", (PAGE_0, PAGE_1, 
 if nav_option == PAGE_0:
     st.title("Solution Flow")
     # Upload manufacturing image
-    image = Image.open(r"solution_flow_.jpg") #read img
+    image = Image.open(r"solution_flow1.jpg") #read img
     # Display the image using streamlit's `image` function
     st.image(image, use_column_width=True)
 elif nav_option == PAGE_1:
