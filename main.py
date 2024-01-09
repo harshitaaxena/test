@@ -740,7 +740,7 @@ else:
                     
                         
                     qa = RetrievalQA.from_chain_type(
-                        llm=OpenAI(openai_api_key=api),
+                        llm=ChatOpenAI(openai_api_key=api,model='gpt-3.5-turbo'),
                         chain_type = "map_reduce",
                         retriever=index.as_retriever(),
                     )
@@ -781,8 +781,8 @@ else:
                     container = st.container()
                 
                     llm_chain = LLMChain(
-                        llm=OpenAI(
-                            temperature=0, openai_api_key=api, model_name="gpt-3.5-turbo"
+                        llm=ChatOpenAI(
+                            temperature=0, openai_api_key=api, model="gpt-3.5-turbo"
                         ),
                         prompt=prompt,
                     )
