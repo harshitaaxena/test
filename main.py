@@ -3,7 +3,8 @@ from page_utils import display_page_header
 from reccomendation import reccomendation_generator
 from sensitivity_graph import sensitivity_graph
 from css import set_custom_css
-#from secret_key import api
+##from secret_key import api
+import datetime
 
 # Ignore all warnings
 warnings.filterwarnings("ignore")
@@ -13,19 +14,30 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 # Define a function to parse a PDF file and extract its text content
 @st.cache_data
 def parse_pdf(file: BytesIO) -> List[str]:
-    pdf = PdfReader(file)
-    output = []
-    for page in pdf.pages:
-        text = page.extract_text()
-        # Merge hyphenated words
-        text = re.sub(r"(\w+)-\n(\w+)", r"\1\2", text)
-        # Fix newlines in the middle of sentences
-        text = re.sub(r"(?<!\n\s)\n(?!\s\n)", " ", text.strip())
-        # Remove multiple newlines
-        text = re.sub(r"\n\s*\n", "\n\n", text)
-        output.append(text)
+    try:
+        pdf = PdfReader(file)
+        output = []
+        for page in pdf.pages:
+            text = page.extract_text()
+            # Merge hyphenated words
+            text = re.sub(r"(\w+)-\n(\w+)", r"\1\2", text)
+            # Fix newlines in the middle of sentences
+            text = re.sub(r"(?<!\n\s)\n(?!\s\n)", " ", text.strip())
+            # Remove multiple newlines
+            text = re.sub(r"\n\s*\n", "\n\n", text)
+            output.append(text)
+    except Exception as e:
+        output = 'Please Upload SOP Document to proceed with chat feature'
     return output
 
+# def get_pdf_url(uploaded_file):
+#     # Save the uploaded file to a temporary location or a cloud storage service
+#     # Return the URL to the saved file
+#     # Here, we'll just save it in the same directory for simplicity
+#     temp_file_path = f"./{uploaded_file.name}"
+#     with open(temp_file_path, "wb") as temp_file:
+#         temp_file.write(uploaded_file.getbuffer())
+#     return f"./{uploaded_file.name}"
 
 # Define a function to convert text content to a list of documents
 @st.cache_data
@@ -704,9 +716,20 @@ else:
     tts = gTTS(text, lang='en' ,slow = 'False')
     tts.write_to_fp(sound_file)
     st.sidebar.audio(sound_file)
-    uploaded_file = st.session_state.uploaded_file
+    ##st.write("Please Upload the SOP Document to proceed with Chat Feature")
+    try :
+        uploaded_file = st.session_state.uploaded_file
+    except Exception as e:
+        uploaded_file = str(e)
+        uploaded_file = "Please Upload SOP Document"
+        st.write('Please Upload SOP Document to proceed with Chat Feature.')
     if uploaded_file:
-            name_of_file = uploaded_file.name
+            try : 
+                name_of_file = uploaded_file.name
+            except Exception as e:
+                name_of_file = str(e)
+                name_of_file = "Please Upload the Manufacturing Document to proceed with Chat Feature"
+
             doc = parse_pdf(uploaded_file)
             pages = text_to_docs(doc)
             if pages:
@@ -715,8 +738,18 @@ else:
                     page_sel = st.number_input(
                         label="Select Page", min_value=1, max_value=len(pages), step=1
                     )
-                    pages[page_sel - 1]
-                
+                    formatted = '<div style="display: flex; flex-direction: column;">'
+                    formatted += f'<div style="display: flex; justify-content: {"flex-end"}; margin: 5px;">'
+                    formatted += f'<div style="background-color: {"#eff6ff"}; padding: 10px; border-radius: 10px;">'
+                    formatted += f'{pages[page_sel - 1]}'
+                    formatted += '</div>'
+                    formatted += '</div>'
+                    st.markdown(formatted, unsafe_allow_html=True)
+                    
+                    # # Display the PDF using an iframe
+                    # pdf_url = get_pdf_url(uploaded_file)
+                    # st.markdown(f'<iframe src="{pdf_url}" width="700" height="800" style="border: none;"></iframe>', unsafe_allow_html=True)
+
                 api = st.secrets['api']
                 #api = api
                 if api:
@@ -725,7 +758,7 @@ else:
             #st.session_state.index = index
                     with st.sidebar.expander("FAQs",expanded = False):
                         st.write("Q : What is the scope ?")
-                        st.write("Q : Give on Overview of the document")
+                        st.write("Q : Give an Overview of the document")
                         st.write("Q : Explain the entire process that Raw Husk goes through ")
                         st.write("Q : Where is the Steam Inlet Temperature measured ?")
                         st.write("Q : Tell me about the Steam Cyclone ")
@@ -740,7 +773,7 @@ else:
                     
                         
                     qa = RetrievalQA.from_chain_type(
-                        llm=ChatOpenAI(openai_api_key=api,model='gpt-3.5-turbo'),
+                        llm=ChatOpenAI(openai_api_key=api ,model="gpt-4" ),
                         chain_type = "map_reduce",
                         retriever=index.as_retriever(),
                     )
@@ -748,12 +781,14 @@ else:
                     # Set up the conversational agent
                     tools = [
                         Tool(
-                            name="State of Union QA System",
+                            name="manuf_operator",
                             func=qa.run,
-                            description="Useful for when you need to answer questions about the aspects asked. Input may be a partial or fully formed question.",
+                            description="Useful for when you need to answer questions about the uploaded document. Input may be a partial or fully formed question.If responses exceed 50 characters provide answers in points. If asked for parameters and ranges provide answers from the document in tabular format.",
                         )
                     ]
                     prefix = """Have a conversation with a human, answering the following questions as best you can based on the context and memory available. 
+                                Provide answers in bullet points whenever they exceed 50 characters to enhance comprehension.
+                                If asked for parameters and ranges provide answers from the document in tabular format.
                                 You have access to a single tool:"""
                     suffix = """Begin!"
                 
@@ -771,9 +806,9 @@ else:
                     if "memory" not in st.session_state:
                                 st.session_state.memory = ConversationBufferWindowMemory(k=3,memory_key="chat_history") 
                     if 'generated' not in st.session_state:
-                        st.session_state['generated'] = ['Hello Ask me anything about the manufacturing process']
+                        st.session_state['generated'] = []#['Hello Ask me anything about the manufacturing process']
                     if 'past' not in st.session_state:
-                        st.session_state['past'] = ['Hey!'] 
+                        st.session_state['past'] = []#['Hey!'] 
                 
                     #container for the chat history
                     response_container = st.container()
@@ -782,7 +817,7 @@ else:
                 
                     llm_chain = LLMChain(
                         llm=ChatOpenAI(
-                            temperature=0, openai_api_key=api, model="gpt-3.5-turbo"
+                            temperature=0, openai_api_key=api, model="gpt-4"
                         ),
                         prompt=prompt,
                     )
@@ -792,26 +827,83 @@ else:
                     )
                 
                     with container:
-                        # Allow the user to enter a query and generate a response
-                        query = st.text_input(
-                            "**What's on your mind?**",
-                            placeholder="Hello I am your Training Assistant! . Ask me anything from SOP document or simulation process {}".format(name_of_file), key='input') 
-                        if query :
-                            with st.spinner(
-                                "Generating Answer to your Query : `{}` ".format(query)
-                            ):
+                        with st.form('form',clear_on_submit=True):
+                            # Allow the user to enter a query and generate a response
+                            query = st.text_input(
+                                "**What's on your mind?**",
+                                placeholder="Hello I am your Training Assistant! . Ask me anything from SOP document or simulation process {}".format(name_of_file), key='input') 
+                            submit_button = st.form_submit_button("Submit")
+                    if submit_button :
+                        with st.spinner(
+                            "Generating Answer to your Query : `{}` ".format(query)
+                        ):
+                            try:
                                 res = agent_chain.run(query)
-                                #st.info(res, icon="🤖")
+                            except Exception as e: #ValueError
+                                        res = str(e)
+                                        # if not response.startswith("Could not parse LLM output: `"):
+                                        #         #raise e
+                                        # response = response.removeprefix("Could not parse LLM output: `").removesuffix("`")
+                                        if res.startswith("Could not parse LLM output: `"):
+                                                prefix_ = "Could not parse LLM output: `" 
+                                                #prefix_ = str(prefix_)
+                                                res = res[len(prefix_):]
+                                                suffix_ = "`"
+                                                #suffix_ = str(suffix_)
+                                                res= res[: -len(suffix_)]
+                                                #res.removeprefix("Could not parse LLM output: `").removesuffix("`")
+                                        else : 
+                                                res= """I am not able to answer due to unexpected errors. Please try again or ask a
+                    different question."""
+                                    #st.info(res, icon="🤖")
+                            col1 , col2  =st.columns([3,1])
+                            with col1:
                                 sound_file = BytesIO()
-                                tts = gTTS(res, lang='en')
-                                tts.write_to_fp(sound_file)
-                                st.audio(sound_file)
+                                try :
+                                    tts = gTTS(res, lang='en')
+                                    tts.write_to_fp(sound_file)
+                                    st.audio(sound_file)
+                                except Exception as e:
+                                    tts = str(e)
+                                    tts = "SOP Document Not Uploaded"
+                            
+                            with col2 :
                                 st.session_state['past'].append(query)
-                                st.session_state['generated'].append(res)
-                
-                                if st.session_state['generated']:
+                                st.session_state['generated'].append(res)  
+                                doc = pd.DataFrame()
+                                doc['query'] = st.session_state['past']  
+                                doc['response'] = st.session_state['generated'] 
+                                csv_history = doc.to_csv(index=False)
+                                b64 = base64.b64encode(csv_history.encode()).decode()
+                                href = f'<div style="display: flex; justify-content: {"flex-start"}; margin: 5px;">'
+                                href += f'<div style="background-color: {"#c4c4c4"}; padding: 10px; border-radius: 10px;">'
+                                href += f'<a href="data:file/csv;base64,{b64}" download="conversation_history.csv">Download Conversation History</a>'
+                                href +=f'</div>'
+                                href +=f'</div>'
+                                st.markdown(href, unsafe_allow_html=True)
+                        # with st.expander("Chat",expanded=False):
+                        #     if st.session_state['generated']:
+                        #         with response_container:
+                        #             for i in range(len(st.session_state['generated'])):
+
+                        #                 message(st.session_state["past"][i], is_user=True, key=str(i) + '_user', avatar_style=None)#avatar_style="big-smile"
+                        #                 message(st.session_state["generated"][i], key=str(i))
+                        with st.expander("Chat",expanded=True):
+                            if st.session_state['generated']:
+                                for i in range(len(st.session_state['generated'])):
+                                    #print(i)
                                     with response_container:
-                                        for i in range(len(st.session_state['generated'])):
-                                            message(st.session_state["past"][i], is_user=True, key=str(i) + '_user', avatar_style="big-smile")
-                                            message(st.session_state["generated"][i], key=str(i))
-           
+                                        user=st.session_state['past'][i]
+                                        ai=st.session_state['generated'][i]
+                                        formatted_conversation = '<div style="display: flex; flex-direction: column;">'
+                                        formatted_conversation += f'<div style="display: flex; justify-content: {"flex-end"}; margin: 5px;">'
+                                        formatted_conversation += f'<div style="background-color: {"#eff6ff"}; padding: 10px; border-radius: 10px;">'
+                                        formatted_conversation += f'{user} :👤'
+                                        formatted_conversation += '</div>'
+                                        formatted_conversation += '</div>'
+                                        formatted_conversation += f'<div style="display: flex; justify-content: {"flex-start"}; margin: 5px;">'
+                                        formatted_conversation += f'<div style="background-color: {"#c4c4c4"}; padding: 10px; border-radius: 10px;">'
+                                        formatted_conversation += f'🤖: {ai}'
+                                        formatted_conversation += '</div>'
+                                        formatted_conversation += '</div>'
+                                        st.markdown(formatted_conversation, unsafe_allow_html=True)
