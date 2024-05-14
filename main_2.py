@@ -2,9 +2,17 @@ from library import *
 from page_utils import display_page_header
 from reccomendation import reccomendation_generator
 from sensitivity_graph import sensitivity_graph
+import os
 from css import set_custom_css
 ##from secret_key import api
 import datetime
+os.environ['LANGCHAIN_TRACING_V2'] = 'true'
+os.environ['LANGCHAIN_ENDPOINT'] = 'https://api.smith.langchain.com'
+os.environ['LANGCHAIN_API_KEY'] = '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'
+os.environ['LANGCHAIN_PROJECT'] = 'operator'
+os.environ["AZURE_OPENAI_API_KEY"] = "f18d7770c8bb4cd088ccead9172ff2e5"
+os.environ["AZURE_OPENAI_ENDPOINT"] = "https://fractal-supply-chain-capability-supplychain-openai-dev.openai.azure.com/"
+
 
 # Ignore all warnings
 warnings.filterwarnings("ignore")
