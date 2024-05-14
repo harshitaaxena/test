@@ -773,7 +773,7 @@ else:
                     
                         
                     qa = RetrievalQA.from_chain_type(
-                        llm=ChatOpenAI(openai_api_key=api ,model="gpt-4" ),
+                        llm=ChatOpenAI(openai_api_key=api ,model="gpt-4o" ),
                         chain_type = "map_reduce",
                         retriever=index.as_retriever(),
                     )
